@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Search, ShieldCheck, ShieldX, User, Home, CalendarDays, Clock, ScanLine } from "lucide-react";
 import QrScanner from "qr-scanner";
 
+QrScanner.WORKER_PATH = "/qr-scanner-worker.min.js";
+
 const Security = () => {
   const [passId, setPassId] = useState("");
   const [result, setResult] = useState<VisitorPass | null>(null);

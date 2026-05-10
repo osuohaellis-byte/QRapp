@@ -4,6 +4,7 @@ import { db } from "./firebase";
 
 export interface VisitorPass {
   id: string;
+  residentId?: string;
   securityCode: string;
   visitorName: string;
   visitorPhone: string;
@@ -27,13 +28,17 @@ function generateSecurityCode(): string {
   return code;
 }
 
-export async function getPasses(): Promise<VisitorPass[]> {
+export async function getPasses(residentId?: string): Promise<VisitorPass[]> {
   const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
-  return querySnapshot.docs.map((snapshot) => {
+  const allPasses = querySnapshot.docs.map((snapshot) => {
     const data = snapshot.data();
     const { id: _id, ...rest } = data as { id?: string } & Omit<VisitorPass, "id">;
     return { id: snapshot.id, ...rest } as VisitorPass;
   });
+
+  return residentId
+    ? allPasses.filter((pass) => pass.residentId === residentId)
+    : allPasses;
 }
 
 export async function createPass(data: Omit<VisitorPass, "id" | "securityCode" | "status" | "createdAt">): Promise<VisitorPass> {

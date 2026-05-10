@@ -21,8 +21,9 @@ const Index = () => {
       if (currentResident) {
         setResident(currentResident);
       }
-      const allPasses = await getPasses();
-      setPasses(allPasses);
+      const residentId = currentResident?.id;
+      const residentPasses = residentId ? await getPasses(residentId) : [];
+      setPasses(residentPasses);
       setLoading(false);
     };
     loadData();
@@ -30,8 +31,10 @@ const Index = () => {
 
   const handleGenerated = async (pass: VisitorPass) => {
     setSelectedPass(pass);
-    const allPasses = await getPasses();
-    setPasses(allPasses);
+    if (resident?.id) {
+      const residentPasses = await getPasses(resident.id);
+      setPasses(residentPasses);
+    }
   };
 
   if (loading) {

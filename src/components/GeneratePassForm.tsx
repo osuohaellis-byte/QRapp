@@ -36,7 +36,10 @@ const GeneratePassForm = ({ onGenerated, resident }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const pass = await createPass(form);
+    const pass = await createPass({
+      ...form,
+      residentId: resident?.id,
+    });
     onGenerated(pass);
     setForm({
       visitorName: "",

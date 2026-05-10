@@ -132,10 +132,13 @@ const Security = () => {
   };
 
   const startScanner = async () => {
+    console.log("🔄 Starting scanner...");
     setScanError(null);
 
     // Check camera permission first
     const permissionState = await checkCameraPermission();
+    console.log("📷 Camera permission state:", permissionState);
+
     if (permissionState === "denied") {
       setScanError("Camera access is blocked. Please enable camera permissions in your browser settings and refresh the page.");
       return;
@@ -160,18 +163,17 @@ const Security = () => {
       return;
     }
 
+    console.log("🎥 Video element ready:", !!videoRef.current);
+    console.log("🔧 Using fallback scanner:", useFallbackScanner);
+
     try {
       if (useFallbackScanner) {
         // Use qr-scanner library as fallback
-        if (!videoRef.current) {
-          throw new Error("Video element not found");
-        }
-
-        console.log("Initializing QR scanner...");
+        console.log("📱 Initializing QR scanner...");
         qrScannerRef.current = new QrScanner(
           videoRef.current,
           (result) => {
-            console.log("QR code detected:", result.data);
+            console.log("✅ QR code detected:", result.data);
             setPassId(result.data);
             stopScanner();
             lookupPass(result.data);
@@ -179,7 +181,7 @@ const Security = () => {
           {
             onDecodeError: (error) => {
               // Ignore decode errors, just continue scanning
-              console.debug("QR decode error:", error);
+              console.debug("❌ QR decode error:", error);
             },
             highlightScanRegion: true,
             highlightCodeOutline: true,
@@ -187,23 +189,23 @@ const Security = () => {
           }
         );
 
-        console.log("Starting QR scanner...");
+        console.log("▶️ Starting QR scanner...");
         await qrScannerRef.current.start();
         scanningRef.current = true;
         setScannerActive(true);
-        console.log("QR scanner started successfully");
+        console.log("✅ QR scanner started successfully");
       } else {
         // Use native BarcodeDetector API
-        console.log("Using native BarcodeDetector API");
+        console.log("🔍 Using native BarcodeDetector API");
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: "environment" },
         });
-        console.log("Camera stream obtained");
+        console.log("📹 Camera stream obtained");
         mediaStreamRef.current = stream;
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           await videoRef.current.play();
-          console.log("Video element playing");
+          console.log("🎬 Video element playing");
         }
 
         detectorRef.current = new (window as any).BarcodeDetector({
@@ -212,10 +214,10 @@ const Security = () => {
         scanningRef.current = true;
         setScannerActive(true);
         frameRef.current = requestAnimationFrame(scanFrame);
-        console.log("BarcodeDetector scanner started");
+        console.log("✅ BarcodeDetector scanner started");
       }
     } catch (error: any) {
-      console.error("Camera access error:", error);
+      console.error("❌ Camera access error:", error);
       let errorMessage = "Unable to access the camera.";
 
       if (error.name === "NotAllowedError") {
@@ -360,11 +362,21 @@ const Security = () => {
           <div className="relative overflow-hidden rounded-2xl border border-border bg-black">
             <video
               ref={videoRef}
-              className={`h-72 w-full object-cover bg-black ${scannerActive ? "block" : "hidden"}`}
+              className="h-72 w-full object-cover bg-black"
               muted
               playsInline
               autoPlay
             />
+
+            {!scannerActive && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/80 text-white">
+                <div className="text-center">
+                  <ScanLine className="mx-auto mb-2 h-8 w-8 text-white/60" />
+                  <p className="text-sm">Camera scanner ready</p>
+                  <p className="text-xs text-white/60 mt-1">Click "Start scanner" to begin</p>
+                </div>
+              </div>
+            )}
 
             {scannerActive && (
               <>

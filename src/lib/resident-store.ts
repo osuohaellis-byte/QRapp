@@ -5,7 +5,6 @@ import { db } from "./firebase";
 export interface Resident {
   id: string;
   name: string;
-  residentNumber: string;
   email: string;
   houseNumber: string;
   status: "pending" | "approved" | "rejected";

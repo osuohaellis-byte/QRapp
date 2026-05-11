@@ -106,12 +106,6 @@ const ResidentPortal = () => {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Resident Number
-                  </label>
-                  <p className="text-lg">{resident.residentNumber}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
                     Email
                   </label>
                   <p className="text-lg">{resident.email}</p>

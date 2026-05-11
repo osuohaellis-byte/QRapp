@@ -13,7 +13,6 @@ const Onboarding = () => {
   const [residentData, setResidentData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    residentNumber: "",
     email: "",
     houseNumber: "",
     name: "",
@@ -45,7 +44,6 @@ const Onboarding = () => {
     const resident = await createResident(formData);
     setResidentData(resident);
     setFormData({
-      residentNumber: "",
       email: "",
       houseNumber: "",
       name: "",
@@ -122,17 +120,6 @@ const Onboarding = () => {
                   name="name"
                   type="text"
                   value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="residentNumber">Resident Number</Label>
-                <Input
-                  id="residentNumber"
-                  name="residentNumber"
-                  type="text"
-                  value={formData.residentNumber}
                   onChange={handleChange}
                   required
                 />

@@ -112,7 +112,6 @@ const Admin = () => {
                 <div className="flex justify-between items-center">
                   <div>
                     <p><strong>Name:</strong> {resident.name}</p>
-                    <p><strong>Resident Number:</strong> {resident.residentNumber}</p>
                     <p><strong>Email:</strong> {resident.email}</p>
                     <p><strong>House Number:</strong> {resident.houseNumber}</p>
                     <p><strong>Submitted:</strong> {new Date(resident.createdAt).toLocaleString()}</p>

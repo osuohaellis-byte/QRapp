@@ -134,19 +134,28 @@ const ResidentLogin = () => {
             </Button>
           </form>
 
-          <div className="mt-4 pt-4 border-t">
+          <div className="mt-4 pt-4 border-t space-y-3">
             {mode === "login" ? (
-              <Button
-                variant="link"
-                className="w-full"
-                onClick={() => {
-                  setMode("setup");
-                  setError("");
-                  setPassword("");
-                }}
-              >
-                First time? Click here to set your password
-              </Button>
+              <>
+                <Button
+                  variant="link"
+                  className="w-full"
+                  onClick={() => {
+                    setMode("setup");
+                    setError("");
+                    setPassword("");
+                  }}
+                >
+                  First time? Click here to set your password
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => navigate("/")}
+                >
+                  Not signed up yet? Go to onboarding
+                </Button>
+              </>
             ) : (
               <Button
                 variant="link"

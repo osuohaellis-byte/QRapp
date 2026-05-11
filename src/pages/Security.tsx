@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import AppHeader from "@/components/AppHeader";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { getPassById, markPassUsed, type VisitorPass } from "@/lib/visitor-store";
+import { getPassById, markPassUsed, markPassDenied, type VisitorPass } from "@/lib/visitor-store";
 import { Badge } from "@/components/ui/badge";
 import { Search, ShieldCheck, ShieldX, User, Home, CalendarDays, Clock, ScanLine } from "lucide-react";
 import QrScanner from "qr-scanner";
@@ -247,6 +247,12 @@ const Security = () => {
     setResult({ ...result, status: "used" });
   };
 
+  const handleDenyEntry = async () => {
+    if (!result) return;
+    await markPassDenied(result.id);
+    setResult({ ...result, status: "denied" });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <AppHeader />
@@ -442,7 +448,11 @@ const Security = () => {
                   <ShieldX className="h-6 w-6 text-destructive" />
                 )}
                 <h2 className="font-display text-xl font-semibold text-card-foreground">
-                  {result.status === "pending" ? "Valid Pass" : "Pass Already Used"}
+                  {result.status === "pending"
+                    ? "Valid Pass"
+                    : result.status === "denied"
+                    ? "Pass Denied"
+                    : "Pass Already Used"}
                 </h2>
               </div>
               <Badge
@@ -481,13 +491,23 @@ const Security = () => {
             </div>
 
             {result.status === "pending" && (
-              <Button
-                onClick={handleApproveEntry}
-                className="mt-6 w-full gap-2 bg-success hover:bg-success/90 text-success-foreground"
-              >
-                <ShieldCheck className="h-4 w-4" />
-                Approve Entry
-              </Button>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Button
+                  onClick={handleApproveEntry}
+                  className="w-full gap-2 bg-success hover:bg-success/90 text-success-foreground"
+                >
+                  <ShieldCheck className="h-4 w-4" />
+                  Approve Entry
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleDenyEntry}
+                  className="w-full gap-2"
+                >
+                  <ShieldX className="h-4 w-4" />
+                  Deny Entry
+                </Button>
+              </div>
             )}
           </div>
         )}

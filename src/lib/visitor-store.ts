@@ -13,7 +13,7 @@ export interface VisitorPass {
   expectedTime: string;
   residentName: string;
   residentUnit: string;
-  status: "pending" | "used" | "expired";
+  status: "pending" | "used" | "expired" | "denied";
   createdAt: string;
 }
 
@@ -60,4 +60,9 @@ export async function getPassById(id: string): Promise<VisitorPass | undefined> 
 export async function markPassUsed(id: string): Promise<void> {
   const docRef = doc(db, COLLECTION_NAME, id);
   await updateDoc(docRef, { status: "used" });
+}
+
+export async function markPassDenied(id: string): Promise<void> {
+  const docRef = doc(db, COLLECTION_NAME, id);
+  await updateDoc(docRef, { status: "denied" });
 }
